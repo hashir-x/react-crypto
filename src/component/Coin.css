@@ -1,0 +1,40 @@
+.coin{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.coin_icon{
+    width: 1.5rem;
+}
+
+.coin_name{
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.coin_symbol {
+    font-weight: 300;
+    font-size: 14px;
+}
+
+.table_heading {
+    height: 4rem;
+    background-color: rgb(255, 255, 255);
+    
+}
+
+td, th {
+    border-bottom: 0.5px dotted #e5e7eb;
+    font-size: 14px;
+    text-align: start;
+}
+
+.table_data {
+    height: 3.5rem;
+    transition: all 460ms ease;
+}
+
+.table_data:hover{
+    background-color: rgb(246, 246, 246);
+}
