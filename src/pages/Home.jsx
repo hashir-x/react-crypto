@@ -3,7 +3,7 @@ import Header from '../component/Header'
 import '../component/Coin.css'
 import call from '../url'
 import Loader from '../component/Loader'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 function Home() {
 
@@ -13,6 +13,12 @@ function Home() {
   const [coin,setCoin] = useState()
 
   const [loading,setLoading] = useState(true)
+
+  const [search,setSearch] = useState('')
+
+  const [sortOrder, setSortOrder] = useState('asc');
+
+  const [priceOrder,setPriceOrder] = useState('asc')
 
   const fetchData = async ()=> {
       const {data} = await call.get(fetchUrl)
@@ -24,46 +30,64 @@ function Home() {
       fetchData()
   },[])
 
-  const setColor = (number) => number > 0 ? 'green' : 'red';
+  const handleSearchChange = (value) => {
+    setSearch(value);
+  };
 
-  const setArrow = (number) => number > 0 ? '\u25B2':'\u25BC';
+  const handlePriceChange = () => {
+    setPriceOrder(prevPriceOrder => prevPriceOrder === 'asc' ? 'des' : 'asc')
+  }
+
+  const priceData = coin?.slice().sort((a,b) => {
+    if(priceOrder === 'asc'){
+        return a.current_price - b.current_price;
+    }else{
+        return b.current_price - a.current_price;
+    }
+  });
+  
+  const handleSortChange = () => {
+    setSortOrder(prevPriceOrder => prevPriceOrder === 'asc' ? 'desc' : 'asc');
+  };
+
+  const sortedData = coin?.slice().sort((a, b) => {
+    const aPriceChange = parseFloat(a.price_change_percentage_24h || 0);
+    const bPriceChange = parseFloat(b.price_change_percentage_24h || 0);
+    if (sortOrder === 'asc') {
+      return aPriceChange - bPriceChange;
+    } else {
+      return bPriceChange - aPriceChange;
+    }
+  });
+
+  const dataToRender = sortOrder === 'asc' ?  priceData : sortedData;
 
   return (
     <>
     {
-        loading ? <Loader/> : <> <Header/>
+        loading ? <Loader/> : <> <Header onSearchChange={handleSearchChange}/>
         <div style={{width:'100%',display:"flex",justifyContent:"center"}}>
         <table style={{width:"80%"}}>
             <thead className='table_heading'>
                 <tr>
                     <th>#</th>
                     <th>Coin</th>
-                    <th>price</th>
-                    <th>24h</th>
+                    <th onClick={handlePriceChange}>price</th>
+                    <th onClick={handleSortChange}>24h</th>
                     <th>24 volume</th>
                     <th>Market Cap</th>
                 </tr>
             </thead>
             <tbody>
-                {
-                    coin?.map((item,index)=>(
-                            <tr className='table_data'>
-                                <td>{index+1}</td>
-                                <td>
-                                    <div className='coin'>
-                                        <img className='coin_icon' src={item?.image} alt="" />
-                                        <span className='coin_name'>{item?.name}</span>
-                                        <span className='coin_symbol'>{item?.symbol}</span>
-                                    </div>
-                                </td>
-                                <td>&#36;{Number(item?.current_price).toLocaleString()}</td>
-    
-                                <td style={{color:setColor(item?.price_change_percentage_24h)}}>{setArrow(item?.price_change_percentage_24h)}{Math.abs(item?.price_change_percentage_24h).toFixed(2)}&nbsp;&#x25;</td>
-    
-                                <td>&#36;{Number(item?.total_volume).toLocaleString()}</td>
-    
-                                <td>&#36;{Number(item?.fully_diluted_valuation).toLocaleString()}</td>                
-                            </tr>
+                { 
+                    dataToRender?.filter((value)=>{
+                        if(value === ''){
+                            return value;
+                        }else if(value.name.toLowerCase().includes(search.toLowerCase())){
+                            return value;
+                        }
+                    }).map((item,i)=>(
+                            <CoinList item={item} i={i} id={item.id}/>
                     ))
                     
                 }
@@ -76,6 +100,37 @@ function Home() {
     
     </>
   )
+}
+
+const CoinList = ({item,i,id}) => {
+
+    const profit = item.price_change_percentage_24h > 0 
+
+    const price = item.current_price;
+
+    const navigate = useNavigate()
+
+    const handleClick = () => {
+        navigate(`/${id}`)
+    }
+    
+
+    return(
+            <tr key={i} className='table_data' onClick={handleClick}>
+                <td>{i+1}</td>
+                <td>
+                    <div className='coin'>
+                        <img className='coin_icon' src={item?.image} alt="" />
+                        <span className='coin_name'>{item?.name}</span>
+                        <span className='coin_symbol'>{item?.symbol}</span>
+                    </div>
+                </td>
+                <td>&#36;{price > 1001 ? (item?.current_price).toLocaleString() : item?.current_price}</td>
+                <td style={profit ? {color:'green'} : {color:"red"}}>{profit ? "\u25B2" + (item?.price_change_percentage_24h).toFixed(2) : "\u25BC" + Math.abs(item?.price_change_percentage_24h).toFixed(2)}</td>
+                <td>&#36;{Number(item?.total_volume).toLocaleString()}</td>
+                <td>&#36;{Number(item?.fully_diluted_valuation).toLocaleString()}</td>                
+            </tr>
+    )
 }
 
 export default Home
