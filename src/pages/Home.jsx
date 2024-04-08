@@ -10,7 +10,7 @@ function Home() {
   
   const fetchUrl = '/coins/markets?vs_currency=usd'
 
-  const [coin,setCoin] = useState()
+  const [coin,setCoin] = useState([])
 
   const [loading,setLoading] = useState(true)
 
@@ -21,9 +21,13 @@ function Home() {
   const [priceOrder,setPriceOrder] = useState('asc')
 
   const fetchData = async ()=> {
+    try {
       const {data} = await call.get(fetchUrl)
       setCoin(data)
       setLoading(false)
+    } catch (error) {
+      console.log(error);
+    }  
   }
 
   useEffect(()=>{
@@ -35,32 +39,30 @@ function Home() {
   };
 
   const handlePriceChange = () => {
-    setPriceOrder(prevPriceOrder => prevPriceOrder === 'asc' ? 'des' : 'asc')
+    setPriceOrder( priceOrder === 'asc' ? 'des' : 'asc')
   }
 
-  const priceData = coin?.slice().sort((a,b) => {
-    if(priceOrder === 'asc'){
-        return a.current_price - b.current_price;
-    }else{
-        return b.current_price - a.current_price;
+  const priceData = coin.slice().sort((a, b) => {
+    if (priceOrder === 'asc') {
+      return a.current_price - b.current_price;
+    } else {
+      return b.current_price - a.current_price;
     }
   });
   
   const handleSortChange = () => {
-    setSortOrder(prevPriceOrder => prevPriceOrder === 'asc' ? 'desc' : 'asc');
+    setSortOrder( sortOrder === 'asc' ? 'desc' : 'asc');
   };
 
-  const sortedData = coin?.slice().sort((a, b) => {
-    const aPriceChange = parseFloat(a.price_change_percentage_24h || 0);
-    const bPriceChange = parseFloat(b.price_change_percentage_24h || 0);
+  const sortedData = coin.slice().sort((a, b) => {
     if (sortOrder === 'asc') {
-      return aPriceChange - bPriceChange;
+      return a.price_change_percentage_24h - b.price_change_percentage_24h;
     } else {
-      return bPriceChange - aPriceChange;
+      return b.price_change_percentage_24h - a.price_change_percentage_24h;
     }
   });
 
-  const dataToRender = sortOrder === 'asc' ?  priceData : sortedData;
+
 
   return (
     <>
@@ -80,7 +82,20 @@ function Home() {
             </thead>
             <tbody>
                 { 
-                    dataToRender?.filter((value)=>{
+                    sortedData?.filter((value)=>{
+                        if(value === ''){
+                            return value;
+                        }else if(value.name.toLowerCase().includes(search.toLowerCase())){
+                            return value;
+                        }
+                    }).map((item,i)=>(
+                            <CoinList item={item} i={i} id={item.id}/>
+                    ))
+                    
+                }
+
+                { 
+                    priceData?.filter((value)=>{
                         if(value === ''){
                             return value;
                         }else if(value.name.toLowerCase().includes(search.toLowerCase())){
