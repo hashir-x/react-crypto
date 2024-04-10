@@ -4,6 +4,7 @@ import '../component/Coin.css'
 import call from '../url'
 import Loader from '../component/Loader'
 import { useNavigate } from 'react-router-dom'
+import Top from '../component/Top'
 
 function Home() {
 
@@ -19,6 +20,9 @@ function Home() {
   const [sortOrder, setSortOrder] = useState('asc');
 
   const [priceOrder,setPriceOrder] = useState('asc')
+
+  const [order,setOrder] = useState(true)
+
 
   const fetchData = async ()=> {
     try {
@@ -40,6 +44,7 @@ function Home() {
 
   const handlePriceChange = () => {
     setPriceOrder( priceOrder === 'asc' ? 'des' : 'asc')
+    setOrder(true)
   }
 
   const priceData = coin.slice().sort((a, b) => {
@@ -52,6 +57,7 @@ function Home() {
   
   const handleSortChange = () => {
     setSortOrder( sortOrder === 'asc' ? 'desc' : 'asc');
+    setOrder(false)
   };
 
   const sortedData = coin.slice().sort((a, b) => {
@@ -68,6 +74,7 @@ function Home() {
     <>
     {
         loading ? <Loader/> : <> <Header onSearchChange={handleSearchChange}/>
+        <Top/>
         <div style={{width:'100%',display:"flex",justifyContent:"center"}}>
         <table style={{width:"80%"}}>
             <thead className='table_heading'>
@@ -81,8 +88,8 @@ function Home() {
                 </tr>
             </thead>
             <tbody>
-                { 
-                    sortedData?.filter((value)=>{
+                { order ?
+                    priceData?.filter((value)=>{
                         if(value === ''){
                             return value;
                         }else if(value.name.toLowerCase().includes(search.toLowerCase())){
@@ -92,10 +99,10 @@ function Home() {
                             <CoinList item={item} i={i} id={item.id}/>
                     ))
                     
-                }
+                :
 
-                { 
-                    priceData?.filter((value)=>{
+                
+                    sortedData?.filter((value)=>{
                         if(value === ''){
                             return value;
                         }else if(value.name.toLowerCase().includes(search.toLowerCase())){
