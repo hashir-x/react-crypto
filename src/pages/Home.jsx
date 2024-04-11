@@ -4,7 +4,8 @@ import '../component/Coin.css'
 import call from '../url'
 import Loader from '../component/Loader'
 import { useNavigate } from 'react-router-dom'
-import Top from '../component/Top'
+import Options from '../component/Options'
+import Footer from '../component/Footer'
 
 function Home() {
 
@@ -74,11 +75,15 @@ function Home() {
     <>
     {
         loading ? <Loader/> : <> <Header onSearchChange={handleSearchChange}/>
-        <Top/>
-        <div style={{width:'100%',display:"flex",justifyContent:"center"}}>
-        <table style={{width:"80%"}}>
+        <div style={{width:"100%",display:"flex",justifyContent:'center'}}>
+          <div style={{width:"84%"}}>
+            <Options/>
+          </div>
+        </div>
+        <div style={{width:'100%',display:"flex",justifyContent:"center",marginBottom:"3rem"}}>
+        <table style={{width:"84%"}}>
             <thead className='table_heading'>
-                <tr>
+                <tr style={{cursor:'pointer'}}>
                     <th>#</th>
                     <th>Coin</th>
                     <th onClick={handlePriceChange}>price</th>
@@ -118,7 +123,7 @@ function Home() {
       </div>
         </>
     }
-     
+       <Footer/>
     
     </>
   )
