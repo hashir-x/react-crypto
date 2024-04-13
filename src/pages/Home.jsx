@@ -25,6 +25,8 @@ function Home() {
   const [order,setOrder] = useState(true)
 
 
+  const shouldShowInput = true;
+
   const fetchData = async ()=> {
     try {
       const {data} = await call.get(fetchUrl)
@@ -74,7 +76,7 @@ function Home() {
   return (
     <>
     {
-        loading ? <Loader/> : <> <Header onSearchChange={handleSearchChange}/>
+        loading ? <Loader/> : <> <Header showInput={shouldShowInput} onSearchChange={handleSearchChange}/>
         <div style={{width:"100%",display:"flex",justifyContent:'center'}}>
           <div style={{width:"84%"}}>
             <Options/>

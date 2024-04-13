@@ -1,0 +1,10 @@
+.btn {
+    display: flex;
+    gap: 5rem;
+}
+
+.btn button {
+    padding: .3rem .8rem;
+    border-radius: 5px;
+    font-weight: bold;
+}

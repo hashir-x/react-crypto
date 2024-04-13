@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import call from '../url'
 import { FaFire } from "react-icons/fa6";
+import { useParams } from 'react-router-dom';
 
 function Trend() {
-
     
     const [tren,setTren] = useState([])
 

@@ -4,7 +4,7 @@ import { SiCoinmarketcap} from "react-icons/si";
 import { CiSearch } from "react-icons/ci";
 import { Link } from 'react-router-dom';
 
-function Header({ onSearchChange }) {
+function Header({ onSearchChange,showInput }) {
 
   return (
     <>
@@ -17,6 +17,7 @@ function Header({ onSearchChange }) {
               <SiCoinmarketcap size={30}/>
             </Link>
           </li>
+          { showInput && <>
           <li className='search-space'>
             <input className='search-bar' type="text" onChange={(e)=>onSearchChange(e.target.value)} />
             <button style={{borderRadius:"4px"}}><CiSearch size={24} /></button>
@@ -24,6 +25,8 @@ function Header({ onSearchChange }) {
           <li>
             <button style={{height:"2rem",width:"2rem"}}>day</button>
           </li>
+          </>
+          }
         </ul>
       </nav>
     </header>
