@@ -19,7 +19,7 @@ function CoinDetails() {
     try {
       const {data} = await call.get(`/coins/${id}`)
       setCoinDetail(data)
-      console.log(data);
+      // console.log(data);
       setLoading(false)
     } catch (error) {
       console.log(error);

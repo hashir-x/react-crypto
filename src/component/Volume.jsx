@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import call from '../url'
 import { LiaMountainSolid } from "react-icons/lia";
+import { useNavigate } from 'react-router-dom';
 
 function Volume() {
 
@@ -35,7 +36,7 @@ function Volume() {
             </div>
            {
            TopC.slice(0,3)?.map((coin,i)=>(
-                <TopVolume coin={coin} i={i}/>
+                <TopVolume coin={coin} i={i} id={coin.id}/>
            ))
            }
         </div>
@@ -43,9 +44,16 @@ function Volume() {
   )
 }
 
-const TopVolume = ({coin,i}) => {
+const TopVolume = ({coin,i,id}) => {
+
+  const navigate = useNavigate()
+
+    const handleClick = () => {
+        navigate(`/${id}`)
+    }
+
   return(
-    <div key={i} style={{display:"flex",justifyContent:"space-between",marginBottom:"0.75rem"}}>
+    <div key={i} onClick={handleClick} style={{display:"flex",justifyContent:"space-between",marginBottom:"0.75rem"}}>
     <div style={{display:'flex',alignItems:"center"}}>
         <img style={{ width: '25px', marginRight: '10px',borderRadius:"50%" }} src={coin?.image} alt="logo" />
         <span>{coin?.name}</span>

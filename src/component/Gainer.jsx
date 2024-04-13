@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import call from '../url'
 import { MdOutlineRocketLaunch } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
 
 function Gainer() {
 
@@ -35,7 +36,7 @@ function Gainer() {
             </div>
            {
            TopC.slice(0,3)?.map((coin,i)=>(
-                <TopCoin coin={coin} i={i}/>
+                <TopCoin coin={coin} i={i} id={coin.id} />
            ))
            }
         </div>
@@ -43,14 +44,20 @@ function Gainer() {
   )
 }
 
-const TopCoin = ({coin,i}) => {
+const TopCoin = ({coin,i,id}) => {
 
   const price = coin.current_price;
 
     const profit = coin.price_change_percentage_24h > 0;
 
+    const navigate = useNavigate()
+
+    const handleClick = () => {
+        navigate(`/${id}`)
+    }
+
   return (
-    <div key={i} style={{display:"flex",justifyContent:"space-between",marginBottom:"0.75rem"}}>
+    <div key={i} onClick={handleClick} style={{display:"flex",justifyContent:"space-between",marginBottom:"0.75rem"}}>
     <div style={{display:'flex',alignItems:"center"}}>
         <img style={{ width: '25px', marginRight: '10px',borderRadius:"50%" }} src={coin?.image} alt="logo" />
         <span>{coin?.name}</span>

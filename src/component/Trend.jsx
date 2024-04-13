@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import call from '../url'
 import { FaFire } from "react-icons/fa6";
-import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Trend() {
     
@@ -11,7 +11,7 @@ function Trend() {
         try {
             const {data} = await call.get('/search/trending')
             setTren(data.coins.slice(0,3))
-            // console.log(data.coins);
+            console.log(data.coins);
         } catch (error) {
             console.log(error);
         }
@@ -32,7 +32,7 @@ function Trend() {
             </div>
            {
            tren?.map((coin,i)=>(
-                <TrendingCoin coin={coin} i={i}/>
+                <TrendingCoin coin={coin} i={i} id={coin.item.id}/>
            ))
            }
         </div>
@@ -40,14 +40,20 @@ function Trend() {
   )
 }
 
-const TrendingCoin = ({coin,i}) => {
+const TrendingCoin = ({coin,i,id}) => {
 
     const price = coin.item.data.price;
 
     const profit = coin.item.data.price_change_percentage_24h.inr > 0;
 
+    const navigate = useNavigate()
+
+    const handleClick = () => {
+        navigate(`/${id}`)
+    }
+
     return(
-        <div key={i} style={{display:"flex",justifyContent:"space-between",marginBottom:"0.75rem"}}>
+        <div key={i} onClick={handleClick} style={{display:"flex",justifyContent:"space-between",marginBottom:"0.75rem"}}>
         <div style={{display:'flex',alignItems:"center"}}>
             <img style={{ width: '25px', marginRight: '10px',borderRadius:"50%" }} src={coin?.item.small} alt="logo" />
             <span>{coin?.item.name}</span>
